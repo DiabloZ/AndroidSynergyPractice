@@ -1,4 +1,4 @@
-package su.vi.androidsynergypractice.calc.presentation
+package su.vi.androidsynergypractice.calc.presentation.main_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,8 +40,12 @@ fun CalculatorScreenPreview() {
 @Composable
 fun CalculatorScreen(modifier: Modifier = Modifier) {
     var input by remember { mutableStateOf("") }
+    val viewModel:MainScreenViewModel
 
     fun evaluate(expression: String): String {
+        viewModel.sendAction(
+            MainScreenActions.Evaluate(expression = expression)
+        )
         return try {
             val result = ExpressionEvaluator.evaluate(expression)
             result.toString()
@@ -48,8 +53,8 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
             e.localizedMessage.toString()
         }
     }
-
-    var res by remember(input) { mutableStateOf(evaluate(input)) }
+    val state = viewModel.state.collectAsState()
+    //var res by remember(input) { mutableStateOf(evaluate(input)) }
     val inputScroll = rememberScrollState()
     LaunchedEffect(input) {
         inputScroll.animateScrollTo(inputScroll.maxValue)
@@ -81,7 +86,7 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
         }
 
             Text(
-                text = res.ifEmpty { "0" },
+                text = state.value.resultString,
                 color = Color.White,
                 fontSize = 22.sp,
                 textAlign = TextAlign.End,

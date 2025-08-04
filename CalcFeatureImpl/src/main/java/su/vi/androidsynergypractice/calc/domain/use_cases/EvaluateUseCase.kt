@@ -1,5 +1,32 @@
-package su.vi.androidsynergypractice.calc.domain
+package su.vi.androidsynergypractice.calc.domain.use_cases
 
+import su.vi.androidsynergypractice.calc.domain.BLANK
+import su.vi.androidsynergypractice.calc.domain.DEFAULT_EMPTY_RPN_RESULT
+import su.vi.androidsynergypractice.calc.domain.ERROR_INVALID_EXPRESSION
+import su.vi.androidsynergypractice.calc.domain.ERROR_UNKNOWN_FUNCTION
+import su.vi.androidsynergypractice.calc.domain.ERROR_UNKNOWN_OPERATOR
+import su.vi.androidsynergypractice.calc.domain.FUNC_ABS
+import su.vi.androidsynergypractice.calc.domain.FUNC_COS
+import su.vi.androidsynergypractice.calc.domain.FUNC_LN
+import su.vi.androidsynergypractice.calc.domain.FUNC_LOG10
+import su.vi.androidsynergypractice.calc.domain.FUNC_SIN
+import su.vi.androidsynergypractice.calc.domain.FUNC_SQRT
+import su.vi.androidsynergypractice.calc.domain.FUNC_TAN
+import su.vi.androidsynergypractice.calc.domain.OP_DIVIDE
+import su.vi.androidsynergypractice.calc.domain.OP_MINUS
+import su.vi.androidsynergypractice.calc.domain.OP_MODULO
+import su.vi.androidsynergypractice.calc.domain.OP_MULTIPLY
+import su.vi.androidsynergypractice.calc.domain.OP_PLUS
+import su.vi.androidsynergypractice.calc.domain.OP_POWER
+import su.vi.androidsynergypractice.calc.domain.PAREN_CLOSE
+import su.vi.androidsynergypractice.calc.domain.PAREN_OPEN
+import su.vi.androidsynergypractice.calc.domain.PRECEDENCE_LEVEL_1
+import su.vi.androidsynergypractice.calc.domain.PRECEDENCE_LEVEL_2
+import su.vi.androidsynergypractice.calc.domain.PRECEDENCE_LEVEL_3
+import su.vi.androidsynergypractice.calc.domain.TOKENIZE_REGEX_PATTERN
+import su.vi.androidsynergypractice.calc.domain.WHITESPACE_REGEX_PATTERN
+import su.vi.androidsynergypractice.calc.domain.WHOLE_NUMBER_CHECK_MODULUS
+import su.vi.androidsynergypractice.calc.domain.WHOLE_NUMBER_CHECK_REMAINDER
 import su.vi.androidsynergypractice.calc.domain.utils.pollLastKt
 import java.util.LinkedList
 import kotlin.math.abs
@@ -11,7 +38,17 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.math.tan
 
-object ExpressionEvaluator {
+internal class EvaluateUseCase() {
+    operator fun invoke(expr: String): Result<Number> {
+        val result = runCatching {
+            val tokens = tokenize(expr)
+            val rpn = toRPN(tokens)
+            evalRPN(rpn)
+        }
+
+        return result
+    }
+
     private val operators = mapOf(
         OP_PLUS to PRECEDENCE_LEVEL_1,
         OP_MINUS to PRECEDENCE_LEVEL_1,
@@ -22,18 +59,6 @@ object ExpressionEvaluator {
     )
 
     private val functions = setOf(FUNC_SIN, FUNC_COS, FUNC_TAN, FUNC_SQRT, FUNC_LOG10, FUNC_LN, FUNC_ABS)
-
-    fun evaluate(expr: String): Number {
-        val tokens = tokenize(expr)
-        val rpn = toRPN(tokens)
-        val evalRes = evalRPN(rpn)
-
-        return if (evalRes % WHOLE_NUMBER_CHECK_MODULUS == WHOLE_NUMBER_CHECK_REMAINDER) {
-            evalRes.toInt()
-        } else {
-            evalRes
-        }
-    }
 
     private fun tokenize(expr: String): List<String> {
         val regex = Regex(TOKENIZE_REGEX_PATTERN)
@@ -84,7 +109,7 @@ object ExpressionEvaluator {
         return output
     }
 
-    private fun evalRPN(rpn: List<String>): Double {
+    private fun evalRPN(rpn: List<String>): Number {
         if (rpn.isEmpty()) {
             return DEFAULT_EMPTY_RPN_RESULT
         }
@@ -126,6 +151,11 @@ object ExpressionEvaluator {
             }
         }
 
-        return stack1.singleOrNull() ?: error(ERROR_INVALID_EXPRESSION)
+        val evalRes = stack1.singleOrNull() ?: error(ERROR_INVALID_EXPRESSION)
+        return if (evalRes % WHOLE_NUMBER_CHECK_MODULUS == WHOLE_NUMBER_CHECK_REMAINDER) {
+            evalRes.toInt()
+        } else {
+            evalRes
+        }
     }
 }
