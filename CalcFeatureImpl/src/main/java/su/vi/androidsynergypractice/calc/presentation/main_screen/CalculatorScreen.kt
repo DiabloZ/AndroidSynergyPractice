@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import su.vi.androidsynergypractice.calc.domain.ExpressionEvaluator
+import su.vi.simply.di.compose.simplyComposeViewModel
 
 @Preview
 @Composable
@@ -40,7 +41,7 @@ fun CalculatorScreenPreview() {
 @Composable
 fun CalculatorScreen(modifier: Modifier = Modifier) {
     var input by remember { mutableStateOf("") }
-    val viewModel:MainScreenViewModel
+    val viewModel: MainScreenViewModel = simplyComposeViewModel<MainScreenViewModel>()
 
     fun evaluate(expression: String): String {
         viewModel.sendAction(
