@@ -1,4 +1,4 @@
-package su.vi.androidsynergypractice
+package su.vi.androidsynergypractice.root.presentation.activities
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,16 +7,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import su.vi.androidsynergypractice.calc.CalculatorApi
-import su.vi.androidsynergypractice.calc.CalculatorImpl
 import su.vi.androidsynergypractice.ui.theme.AndroidSynergyPracticeTheme
+import su.vi.dimodule.DIModule
+import su.vi.simply.di.core.delegates.inject
 
 class MainActivity : ComponentActivity() {
-    private val calculatorApi: CalculatorApi = CalculatorImpl()
+    private val calculatorApi: CalculatorApi by inject(DIModule.getContainer())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,29 +22,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             AndroidSynergyPracticeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    calculatorApi.CalculatorScreen()
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    calculatorApi.CalculatorScreen(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AndroidSynergyPracticeTheme {
-        Greeting("Android")
     }
 }

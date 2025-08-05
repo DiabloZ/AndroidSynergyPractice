@@ -49,6 +49,11 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    implementation(libs.simply.di.android)
+    implementation(libs.simply.di.compose)
+    implementation(libs.simply.di.core)
+    implementation(libs.simply.di.viewmodel)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -59,4 +64,5 @@ dependencies {
 
     implementation(project(":CalcFeatureApi"))
     implementation(project(":CalcFeatureImpl"))
+    implementation(project(":DIModule"))
 }

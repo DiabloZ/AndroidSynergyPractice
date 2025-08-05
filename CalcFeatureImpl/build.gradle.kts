@@ -56,5 +56,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation(libs.simply.di.android)
+    implementation(libs.simply.di.compose)
+    implementation(libs.simply.di.core)
+    implementation(libs.simply.di.viewmodel)
+
     implementation(project(":CalcFeatureApi"))
+    implementation(project(":DIModule"))
 }

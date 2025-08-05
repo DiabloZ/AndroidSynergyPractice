@@ -23,3 +23,4 @@ rootProject.name = "AndroidSynergyPractice"
 include(":app")
 include(":CalcFeatureImpl")
 include(":CalcFeatureApi")
+include(":DIModule")
