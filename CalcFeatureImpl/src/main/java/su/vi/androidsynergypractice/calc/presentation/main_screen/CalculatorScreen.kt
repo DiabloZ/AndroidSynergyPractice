@@ -47,12 +47,12 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
         viewModel.sendAction(
             MainScreenActions.Evaluate(expression = expression)
         )
-        return try {
+        return ""/* try {
             val result = ExpressionEvaluator.evaluate(expression)
             result.toString()
         } catch (e: Exception) {
             e.message.toString()
-        }
+        }*/
     }
     val state = viewModel.state.collectAsState()
     //var res by remember(input) { mutableStateOf(evaluate(input)) }

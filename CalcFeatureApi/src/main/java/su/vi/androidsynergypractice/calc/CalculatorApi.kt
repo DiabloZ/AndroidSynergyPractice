@@ -5,5 +5,5 @@ import androidx.compose.ui.Modifier
 
 interface CalculatorApi {
     @Composable
-    fun CalculatorScreen(modifier: Modifier = Modifier.Companion)
+    fun CalculatorScreen(modifier: Modifier)
 }
