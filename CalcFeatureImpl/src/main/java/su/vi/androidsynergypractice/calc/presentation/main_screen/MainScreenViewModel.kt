@@ -2,6 +2,7 @@ package su.vi.androidsynergypractice.calc.presentation.main_screen
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import su.vi.androidsynergypractice.calc.domain.BLANK
 import su.vi.androidsynergypractice.calc.domain.interactors.CalcInteractor
@@ -11,12 +12,17 @@ internal class MainScreenViewModel(
 ): ViewModel() {
 
     private val _state = MutableStateFlow<MainScreenState>(MainScreenState.InitialState)
-    internal val state = _state.asStateFlow()
+    internal val state: StateFlow<MainScreenState> = _state.asStateFlow()
 
     fun sendAction(action: MainScreenActions) {
         when(action) {
             is MainScreenActions.Evaluate -> evaluate(action.expression)
+            MainScreenActions.Clear -> clear()
         }
+    }
+
+    private fun clear() {
+        _state.value = MainScreenState.InitialState
     }
 
     private fun evaluate(expression: String) {

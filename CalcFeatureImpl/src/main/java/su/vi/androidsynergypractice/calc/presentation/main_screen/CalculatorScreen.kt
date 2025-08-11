@@ -29,7 +29,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import su.vi.androidsynergypractice.calc.domain.ExpressionEvaluator
 import su.vi.simply.di.compose.simplyComposeViewModel
 
 @Preview
@@ -40,22 +39,11 @@ fun CalculatorScreenPreview() {
 
 @Composable
 fun CalculatorScreen(modifier: Modifier = Modifier) {
-    var input by remember { mutableStateOf("") }
     val viewModel: MainScreenViewModel = simplyComposeViewModel<MainScreenViewModel>()
 
-    fun evaluate(expression: String): String {
-        viewModel.sendAction(
-            MainScreenActions.Evaluate(expression = expression)
-        )
-        return ""/* try {
-            val result = ExpressionEvaluator.evaluate(expression)
-            result.toString()
-        } catch (e: Exception) {
-            e.message.toString()
-        }*/
-    }
     val state = viewModel.state.collectAsState()
-    //var res by remember(input) { mutableStateOf(evaluate(input)) }
+    var input by remember(state.value.evaluateString) { mutableStateOf(state.value.evaluateString) }
+
     val inputScroll = rememberScrollState()
     LaunchedEffect(input) {
         inputScroll.animateScrollTo(inputScroll.maxValue)
@@ -82,22 +70,21 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
                 maxLines = 2,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 24.dp)
+                    .padding(top = 24.dp, bottom = 8.dp)
             )
         }
 
-            Text(
-                text = state.value.resultString,
-                color = Color.White,
-                fontSize = 22.sp,
-                textAlign = TextAlign.End,
-                softWrap = false,
-                maxLines = 1,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp)
-            )
-
+        Text(
+            text = state.value.resultString,
+            color = Color.White,
+            fontSize = 22.sp,
+            textAlign = TextAlign.End,
+            softWrap = false,
+            minLines = 1,
+            maxLines = 1,
+            modifier = Modifier
+                .fillMaxWidth()
+        )
 
 
         val buttons = listOf(
@@ -118,9 +105,13 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
                 row.forEach { label ->
                     CalculatorButton(label = label, onClick = {
                         when (label) {
-                            "AC" -> input = ""
+                            "AC" -> viewModel.sendAction(
+                                MainScreenActions.Clear
+                            )
                             "⌫" -> if (input.isNotEmpty()) input = input.dropLast(1)
-                            "=" -> input = evaluate(input)
+                            "=" -> viewModel.sendAction(
+                                MainScreenActions.Evaluate(expression = input)
+                            )
                             else -> input += label
                         }
                     })

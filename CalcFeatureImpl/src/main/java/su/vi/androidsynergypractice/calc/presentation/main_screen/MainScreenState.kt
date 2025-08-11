@@ -7,7 +7,7 @@ internal class MainScreenState(
     internal companion object {
         val InitialState = MainScreenState(
             evaluateString = "",
-            resultString = "",
+            resultString = " ",
         )
     }
 }
