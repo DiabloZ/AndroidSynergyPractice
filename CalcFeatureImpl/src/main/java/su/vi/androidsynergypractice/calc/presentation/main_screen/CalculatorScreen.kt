@@ -51,7 +51,7 @@ fun CalculatorScreen(modifier: Modifier = Modifier) {
             val result = ExpressionEvaluator.evaluate(expression)
             result.toString()
         } catch (e: Exception) {
-            e.localizedMessage.toString()
+            e.message.toString()
         }
     }
     val state = viewModel.state.collectAsState()
